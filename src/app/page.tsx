@@ -3,7 +3,7 @@ import Image from "next/image";
 import ChartComponent from "@/components/ChartComponent";
 
 export default function Home() {
-  const randomMaxValue = Math.floor(Math.random() * 100) + 1;
+  const randomMaxValue = parseFloat((Math.random() * 19 + 1).toFixed(2));
   console.log(randomMaxValue);
   
   return (

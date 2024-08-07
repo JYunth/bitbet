@@ -9,6 +9,7 @@ interface GraphComponentProps {
 
 const GraphComponent: React.FC<GraphComponentProps> = ({ maxValue }) => {
   const [data, setData] = useState<{ x: number; y: number }[]>([]);
+  const [currentValue, setCurrentValue] = useState<number>(1);
   const animationRef = useRef<number>();
   const startTime = useRef<number>(Date.now());
 
@@ -22,6 +23,7 @@ const GraphComponent: React.FC<GraphComponentProps> = ({ maxValue }) => {
     const currentTime = Date.now() - startTime.current;
     const newPoint = generatePoint(currentTime);
     setData(prevData => [...prevData, newPoint]);
+	setCurrentValue(newPoint.y);
 
     if (newPoint.y < maxValue) {
       animationRef.current = requestAnimationFrame(animate);
@@ -38,11 +40,26 @@ const GraphComponent: React.FC<GraphComponentProps> = ({ maxValue }) => {
   }, [maxValue]);
 
   return (
-    <LineChart width={500} height={300} data={data}>
-      <XAxis dataKey="x" />
-      <YAxis />
-      <Line type="monotone" dataKey="y" stroke="#8884d8" dot={false} />
-    </LineChart>
+    <div style={{ position: 'relative', width: '100%', height: '300px' }}>
+      <div style={{
+        position: 'absolute',
+        top: '10px',
+        right: '10px',
+        zIndex: 1,
+        backgroundColor: 'rgba(255, 255, 255, 0.7)',
+        padding: '5px',
+        borderRadius: '5px'
+      }}>
+        {currentValue.toFixed(2)}x
+      </div>
+      <ResponsiveContainer width="100%" height="100%">
+        <LineChart data={data}>
+          <XAxis dataKey="x" axisLine={{ stroke: '#666' }} tick={false} />
+          <YAxis domain={[1, maxValue]} axisLine={{ stroke: '#666' }} tick={false} />
+          <Line type="monotone" dataKey="y" stroke="#8884d8" dot={false} isAnimationActive={false} />
+        </LineChart>
+      </ResponsiveContainer>
+    </div>
   );
 };
 
