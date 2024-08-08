@@ -4,72 +4,46 @@ module.exports = {
   plugins: [require("daisyui")],
   darkTheme: "dark",
   darkMode: ["selector", "[data-theme='dark']"],
-  // DaisyUI theme colors
   daisyui: {
     themes: [
       {
         light: {
-          primary: "#93BBFB",
-          "primary-content": "#212638",
-          secondary: "#DAE8FF",
-          "secondary-content": "#212638",
-          accent: "#93BBFB",
-          "accent-content": "#212638",
-          neutral: "#212638",
-          "neutral-content": "#ffffff",
-          "base-100": "#ffffff",
-          "base-200": "#f4f8ff",
-          "base-300": "#DAE8FF",
-          "base-content": "#212638",
-          info: "#93BBFB",
-          success: "#34EEB6",
-          warning: "#FFCF72",
-          error: "#FF8863",
-
-          "--rounded-btn": "9999rem",
-
-          ".tooltip": {
-            "--tooltip-tail": "6px",
-          },
-          ".link": {
-            textUnderlineOffset: "2px",
-          },
-          ".link:hover": {
-            opacity: "80%",
-          },
+          primary: "#FF5722", // Orange-red primary color
+          "primary-content": "#FFFFFF", // White text on primary
+          secondary: "#FFC107", // Yellow secondary color
+          "secondary-content": "#212121", // Dark gray text on secondary
+          accent: "#4CAF50", // Green accent color
+          "accent-content": "#FFFFFF", // White text on accent
+          neutral: "#212121", // Dark gray neutral
+          "neutral-content": "#FFFFFF", // White text on neutral
+          "base-100": "#FAFAFA", // Light gray base color
+          "base-200": "#F5F5F5", // Slightly darker base color
+          "base-300": "#EEEEEE", // Even darker base color
+          "base-content": "#212121", // Dark gray base content
+          info: "#2196F3", // Blue info color
+          success: "#4CAF50", // Green success color
+          warning: "#FFC107", // Yellow warning color
+          error: "#F44336", // Red error color
         },
       },
       {
         dark: {
-          primary: "#212638",
-          "primary-content": "#F9FBFF",
-          secondary: "#323f61",
-          "secondary-content": "#F9FBFF",
-          accent: "#4969A6",
-          "accent-content": "#F9FBFF",
-          neutral: "#F9FBFF",
-          "neutral-content": "#385183",
-          "base-100": "#385183",
-          "base-200": "#2A3655",
-          "base-300": "#212638",
-          "base-content": "#F9FBFF",
-          info: "#385183",
-          success: "#34EEB6",
-          warning: "#FFCF72",
-          error: "#FF8863",
-
-          "--rounded-btn": "9999rem",
-
-          ".tooltip": {
-            "--tooltip-tail": "6px",
-            "--tooltip-color": "oklch(var(--p))",
-          },
-          ".link": {
-            textUnderlineOffset: "2px",
-          },
-          ".link:hover": {
-            opacity: "80%",
-          },
+          primary: "#FF5722",
+          "primary-content": "#FFFFFF",
+          secondary: "#FFC107",
+          "secondary-content": "#FFFFFF",
+          accent: "#4CAF50",
+          "accent-content": "#FFFFFF",
+          neutral: "#FFFFFF",
+          "neutral-content": "#212121",
+          "base-100": "#212121",
+          "base-200": "#333333",
+          "base-300": "#424242",
+          "base-content": "#FFFFFF",
+          info: "#2196F3",
+          success: "#4CAF50",
+          warning: "#FFC107",
+          error: "#F44336",
         },
       },
     ],

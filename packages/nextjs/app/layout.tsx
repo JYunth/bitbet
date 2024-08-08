@@ -6,7 +6,7 @@ import { getMetadata } from "~~/utils/scaffold-eth/getMetadata";
 
 export const metadata = getMetadata({
   title: "BitBet. Win BIG!",
-  description: "Jheyanth",
+  description: "BitBet a online betting platform with your Bitcoin(BTC)",
 });
 
 const ScaffoldEthApp = ({ children }: { children: React.ReactNode }) => {
