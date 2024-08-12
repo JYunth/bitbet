@@ -1,9 +1,12 @@
-//SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: MIT
 pragma solidity >=0.8.0 <0.9.0;
 
 import "hardhat/console.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 contract CrashGameContract {
+    IERC20 public wbtcToken;
+
     // State Variables
     address public owner;
     uint256 public crashPoint;
@@ -12,7 +15,7 @@ contract CrashGameContract {
     bool public gameInProgress;
     mapping(address => uint256) public playerBets;
     mapping(address => uint256) public playerCashouts;
-	address[] public players;
+    address[] public players;
     mapping(address => bool) public hasPlacedBet;
 
     // Events
@@ -22,8 +25,9 @@ contract CrashGameContract {
     event GameEnded(uint256 gameId, uint256 crashPoint);
 
     // Constructor
-    constructor(address _owner) {
+    constructor(address _owner, address _wbtcTokenAddress) {
         owner = _owner;
+        wbtcToken = IERC20(_wbtcTokenAddress);
         gameCounter = 0;
         gameInProgress = false;
     }
@@ -53,20 +57,21 @@ contract CrashGameContract {
         emit GameStarted(gameCounter);
     }
 
+    function placeBet(uint256 amount) public gameIsInProgress {
+        require(amount > 0, "Bet amount must be greater than 0");
+        require(wbtcToken.balanceOf(msg.sender) >= amount, "Insufficient WBTC balance");
+        require(wbtcToken.allowance(msg.sender, address(this)) >= amount, "Insufficient WBTC allowance");
 
-    function placeBet() public payable gameIsInProgress {
-        require(msg.value > 0, "Bet amount must be greater than 0");
-        require(playerBets[msg.sender] == 0, "Player has already placed a bet");
+        wbtcToken.transferFrom(msg.sender, address(this), amount);
+        playerBets[msg.sender] = amount;
+        totalBets += amount;
 
-        playerBets[msg.sender] = msg.value;
-        totalBets += msg.value;
-
-		if (!hasPlacedBet[msg.sender]) {
+        if (!hasPlacedBet[msg.sender]) {
             players.push(msg.sender);
             hasPlacedBet[msg.sender] = true;
         }
 
-        emit BetPlaced(msg.sender, msg.value);
+        emit BetPlaced(msg.sender, amount);
     }
 
     function cashOut() public gameIsInProgress {
@@ -78,6 +83,7 @@ contract CrashGameContract {
 
         uint256 payout = (playerBets[msg.sender] * currentMultiplier) / 100;
         playerCashouts[msg.sender] = payout;
+        require(wbtcToken.transfer(msg.sender, payout), "WBTC transfer failed");
 
         emit PlayerCashedOut(msg.sender, payout, currentMultiplier);
     }
@@ -86,17 +92,14 @@ contract CrashGameContract {
         gameInProgress = false;
         for (uint i = 0; i < players.length; i++) {
             address player = players[i];
-			if (playerCashouts[player] > 0) {
-                // Transfer winnings to player
-                (bool success, ) = player.call{value: playerCashouts[player]}("");
-                require(success, "Failed to send Ether");
+            if (playerCashouts[player] > 0) {
+                require(wbtcToken.transfer(player, playerCashouts[player]), "WBTC transfer failed");
             }
-            // Reset player data
             playerBets[player] = 0;
             playerCashouts[player] = 0;
-			hasPlacedBet[player] = false;
+            hasPlacedBet[player] = false;
         }
-		delete players;
+        delete players;
         emit GameEnded(gameCounter, crashPoint);
     }
 
@@ -114,8 +117,8 @@ contract CrashGameContract {
 
     // Function to withdraw contract balance (for owner)
     function withdraw() public isOwner {
-        (bool success, ) = owner.call{value: address(this).balance}("");
-        require(success, "Failed to send Ether");
+        uint256 balance = wbtcToken.balanceOf(address(this));
+        require(wbtcToken.transfer(owner, balance), "WBTC transfer failed");
     }
 
     receive() external payable {}
